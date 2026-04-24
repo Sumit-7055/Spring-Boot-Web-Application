@@ -3,6 +3,7 @@ package com.example.springbootwebapplication.Service;
 import com.example.springbootwebapplication.model.Todo;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -59,5 +60,19 @@ public class TodoService {
                 iterator.remove();
             }
         }
+    }
+
+    public Todo retreveTodo(int id) {
+        for (Todo todo : todos) {
+            if (todo.getId() == id) {
+                return todo;
+            }
+        }
+        return null;
+    }
+
+    public void updateTodo(@Valid Todo todo) {
+        todos.remove(todo);
+        todos.add(todo);
     }
 }

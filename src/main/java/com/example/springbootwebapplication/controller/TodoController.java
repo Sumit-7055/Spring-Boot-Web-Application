@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import javax.validation.Valid;
 import java.util.Date;
 
 @Controller
@@ -34,8 +35,12 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/add-todo", method = RequestMethod.POST)
-    public String addTodo(ModelMap model, @RequestParam String desc) {
-        todoService.addTodo((String) model.get("name"), desc, new Date(), false);
+    public String addTodo(ModelMap model, @Valid Todo todo, BindingResult result) {
+
+        if(result.hasErrors()){
+            return "todo";
+        }
+        todoService.addTodo((String) model.get("name"), todo.getDesc(), new Date(), false);
         return "redirect:/list-todos";
     }
 
@@ -44,5 +49,20 @@ public class TodoController {
         todoService.deleteTodo(id);
         return "redirect:/list-todos";
 
+    }
+    @RequestMapping (value = "/update-todo",method = RequestMethod.POST)
+    public String showUpdateTodoPage (@RequestParam int id , ModelMap model){
+        Todo todo = todoService.retreveTodo(id);
+        model.put("todo",todo);
+        return "todo";
+    }
+    @RequestMapping(value = "/update-todo", method = RequestMethod.POST)
+    public String updateTodo(ModelMap model, @Valid Todo todo,BindingResult result ){
+        if (result.hasErrors()) {
+            return "todo";
+        }
+        todo.setUser((String)model.get("name"));
+        todoService.updateTodo(todo);
+        return "redirect://List-todo";
     }
 }
