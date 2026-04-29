@@ -1,10 +1,7 @@
-<html>
-<head>
-    <title>First web application</title>
-</head>
-<body>
-<p>Welcome, ${name}! You have successfully logged in.</p>
- <a href="/list-todos">Click here</a> To manage your Todos</h1>
-<!-- when we hit click here , list-todos will be handled by controller and then list-todos.jsp will be rendered with the data from controller -->
-</body>
-</html>
+<%@ include file="common/header.jspf"%>
+<%@ include file="common/navigation.jspf"%>
+<div class="container">
+	Welcome ${name}!! <a href="/list-todos">Click here</a> to manage your
+	todo's.
+</div>
+<%@ include file="common/footer.jspf"%>

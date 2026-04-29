@@ -1,15 +1,20 @@
 package com.example.springbootwebapplication.model;
 
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 public class Todo {
     private int id;
     private String user;
+    @Size(min=10, message="Enter at least 10 Characters...")
     private String desc;
     private Date targetDate;
     private boolean isDone;
 
 //    if Todo were extending a class that does not have a no-argument constructor, you would need to explicitly call the appropriate superclass constructor using super(arguments); otherwise, the code would fail to compile.
+    public Todo() {
+        super();
+    }
 
     public Todo(int id, String user, String desc, Date targetDate,
                 boolean isDone) {

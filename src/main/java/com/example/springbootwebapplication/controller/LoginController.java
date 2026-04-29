@@ -2,9 +2,16 @@ package com.example.springbootwebapplication.controller;
 
 import com.example.springbootwebapplication.Service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 //org.springframework.ui provides utility classes and interfaces for handling UI-related tasks in Spring MVC.
 
@@ -30,25 +37,51 @@ public class LoginController {
         this.loginService = loginService;
     }
 
-    @RequestMapping(value = "/login",method = RequestMethod.GET)
-    public String showLoginPage(){
-        return "login";
+//    @RequestMapping(value = "/login",method = RequestMethod.GET)
+//    public String showLoginPage(){
+//        return "login";
+//    }
+//
+//    @RequestMapping(value = "/login",method = RequestMethod.POST)
+//    public String handleLogin (ModelMap model , @RequestParam String name, @RequestParam String password){
+//        System.out.println("Login name: " + name);
+//        System.out.println("Password before validation: " + password);
+//        if (loginService.ValidateUser(name, password)) {
+//            System.out.println("Login successful for user: " + name);
+//            System.out.println("Password: " + password);
+//            model.put("name", name);
+//            return "welcome";
+//        }
+//        else{
+//            model.put("errorMessage", "Invalid Credentials");
+//            return "login";
+//        }
+//    }
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String showWelcomePage(ModelMap model) {
+        model.put("name", getLoggedinUserName());
+        return "welcome";
     }
 
-    @RequestMapping(value = "/login",method = RequestMethod.POST)
-    public String handleLogin (ModelMap model , @RequestParam String name, @RequestParam String password){
-        System.out.println("Login name: " + name);
-        System.out.println("Password before validation: " + password);
-        if (loginService.ValidateUser(name, password)) {
-            System.out.println("Login successful for user: " + name);
-            System.out.println("Password: " + password);
-            model.put("name", name);
-            return "welcome";
+    private String getLoggedinUserName() {
+        Object principal = SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
         }
-        else{
-            model.put("errorMessage", "Invalid Credentials");
-            return "login";
-        }
+
+        return principal.toString();
     }
 
+    @RequestMapping
+    public String logout(HttpServletRequest req, HttpServletResponse resp){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth!= null){
+            new SecurityContextLogoutHandler().logout(req, resp, auth);
+
+        }
+        return "redirect:/";
+    }
 }

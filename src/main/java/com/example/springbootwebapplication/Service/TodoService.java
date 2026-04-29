@@ -25,7 +25,7 @@ public class TodoService {
     public List<Todo> retreveTodos(String user) {
         List<Todo> TodoList = new ArrayList<>();
         for (Todo todo : todos) {
-            if (todo.getUser().equals(user)) {
+            if (todo.getUser().equalsIgnoreCase(user)) {
                 TodoList.add(todo);
             }
         }
